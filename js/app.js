@@ -109,15 +109,44 @@ class Workout {
 	}
 }
 
-const tracker = new CalorieTracker();
-const breakfast = new Meal('Breakfast', 700);
-tracker.addMeal(breakfast);
+class App {
+	constructor() {
+		this._tracker = new CalorieTracker();
+		
+		document.getElementById('meal-form').addEventListener('submit', this._newItem.bind(this, 'meal'));
+		document.getElementById('workout-form').addEventListener('submit', this._newItem.bind(this, 'workout'));
+	}
 
-const run = new Workout('Morning Run', 300);
-tracker.addWorkout(run);
-const pushUps = new Workout('Push Ups', 300);
-tracker.addWorkout(pushUps);
+	_newItem(type, e) {
+		e.preventDefault();
 
-console.log(tracker._meals);
-console.log(tracker._workouts);
-console.log(tracker._totalCalories);
+		const name = document.getElementById(`${type}-name`);
+		const calories = document.getElementById(`${type}-calories`);
+
+		// Check input
+		if (name.value === '' || calories.value === '') {
+			alert('Please fill in all fields.');
+		}
+
+		// Check type then call method
+		if (type === 'meal') {
+			const meal = new Meal(name.value, +calories.value);
+			this._tracker.addMeal(meal);
+		} else {
+			const workout = new Workout(name.value, +calories.value);
+			this._tracker.addWorkout(workout);
+		}
+
+		// Clear form fields
+		name.value = '';
+		calories.value = '';
+
+		// Collapse input field after submit (Bootstrap)
+		const collapseForm = document.getElementById(`collapse-${type}`);
+		const bsCollapse = new bootstrap.Collapse(collapseForm, {
+			toggle: true
+		});
+	}
+}
+
+const app = new App();
