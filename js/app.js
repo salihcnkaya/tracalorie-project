@@ -185,6 +185,8 @@ class App {
 		document.getElementById('workout-form').addEventListener('submit', this._newItem.bind(this, 'workout'));
 		document.getElementById('meal-items').addEventListener('click', this._removeItem.bind(this, 'meal'));
 		document.getElementById('workout-items').addEventListener('click', this._removeItem.bind(this, 'workout'));
+		document.getElementById('filter-meals').addEventListener('keyup', this._filterItems.bind(this, 'meal'));
+		document.getElementById('filter-workouts').addEventListener('keyup', this._filterItems.bind(this, 'workout'));
 	}
 
 	_newItem(type, e) {
@@ -233,6 +235,19 @@ class App {
 			e.target.closest('.card').remove();
 			}
 		}
+	}
+
+	_filterItems(type, e) {
+		const input = e.target.value.toLowerCase();
+		
+		document.querySelectorAll(`#${type}-items .card`).forEach((i) => {
+			const name = i.firstElementChild.firstElementChild.textContent;
+			if (name.toLowerCase().indexOf(input) !== -1) {
+				i.style.display = 'block';
+			} else {
+				i.style.display = 'none';
+			}
+		});
 	}
 }
 
